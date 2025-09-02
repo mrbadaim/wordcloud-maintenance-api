@@ -3,3 +3,4 @@ wordcloud
 numpy
 Pillow
 matplotlib
+pandas
