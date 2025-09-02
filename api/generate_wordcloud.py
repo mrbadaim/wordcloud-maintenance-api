@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 import base64
 from io import BytesIO
 import logging
+import pandas as pd
 
 # 强制设置 Matplotlib 后端
 import matplotlib
@@ -109,8 +110,17 @@ def generate_custom_wordcloud(word_freq):
     current_dir = os.path.dirname(os.path.abspath(__file__))
     font_path = os.path.join(current_dir, 'fonts', 'msyh.ttc')
 
+    # 检查字体文件是否存在
     if not os.path.exists(font_path):
-        raise FileNotFoundError("字体文件缺失，请确保 fonts/msyh.ttc 存在")
+        # 尝试备用路径
+        font_path = '/usr/share/fonts/truetype/microsoft/microsoft-yahei.ttf'
+        if not os.path.exists(font_path):
+            # 最后尝试Windows路径
+            font_path = 'C:/Windows/Fonts/msyh.ttc'
+            if not os.path.exists(font_path):
+                raise FileNotFoundError("中文字体文件缺失，请确保msyh.ttc存在于fonts目录")
+
+    logger.info(f"使用字体路径: {font_path}")
 
     wc = WordCloud(
         font_path=font_path,
