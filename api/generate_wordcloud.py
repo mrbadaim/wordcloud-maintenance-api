@@ -1,8 +1,8 @@
 # api/generate_wordcloud.py
 
-import matplotlib
-matplotlib.use('Agg')  # 必须在导入 plt 前设置
-import matplotlib.pyplot as plt
+# import matplotlib
+# matplotlib.use('Agg')  # 必须在导入 plt 前设置
+# import matplotlib.pyplot as plt
 
 import pandas as pd
 import jieba
@@ -18,6 +18,7 @@ import os
 import logging
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
+from PIL import Image as PILImage
 
 
 
@@ -199,13 +200,21 @@ def generate_custom_wordcloud(word_freq):
         wc.generate_from_frequencies(word_freq)
 
         # 创建图像缓冲区
+        # img_buffer = BytesIO()
+        # plt.figure(figsize=(12, 9), dpi=100)
+        # plt.imshow(wc, interpolation='lanczos')
+        # plt.axis('off')
+        # plt.tight_layout(pad=0)
+        # plt.savefig(img_buffer, format='png', dpi=80, bbox_inches='tight', pad_inches=0)
+        # plt.close()
+
+        # 将词云转换为 PIL 图像
+        image_array = wc.to_array()  # numpy array
+        pil_image = PILImage.fromarray(image_array)
+
+        # 保存到 BytesIO
         img_buffer = BytesIO()
-        plt.figure(figsize=(12, 9), dpi=100)
-        plt.imshow(wc, interpolation='lanczos')
-        plt.axis('off')
-        plt.tight_layout(pad=0)
-        plt.savefig(img_buffer, format='png', dpi=80, bbox_inches='tight', pad_inches=0)
-        plt.close()
+        pil_image.save(img_buffer, format='PNG')
 
         img_buffer.seek(0)
         return img_buffer
