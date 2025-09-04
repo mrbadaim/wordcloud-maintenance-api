@@ -25,19 +25,24 @@ from pymongo.server_api import ServerApi
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# MongoDB 连接配置
+# ======================
+# MongoDB 连接（使用环境变量）
+# ======================
 def get_mongo_client():
     try:
-        # 从环境变量获取 MongoDB 连接字符串
-        mongo_uri = "mongodb+srv://admin:Diotec2005@cluster0.dpxn7cl.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
-        client = MongoClient(mongo_uri)
-        # 测试连接
+        mongo_uri = os.getenv("MONGODB_URI")
+        if not mongo_uri:
+            logger.warning("MONGODB_URI 未设置，跳过 MongoDB 存储")
+            return None
+        client = MongoClient(mongo_uri, server_api=ServerApi('1'))
         client.admin.command('ping')
         logger.info("成功连接到 MongoDB")
         return client
     except Exception as e:
         logger.error(f"MongoDB 连接失败: {str(e)}")
         return None
+
+
 
 # 初始化 MongoDB 连接
 mongo_client = get_mongo_client()
