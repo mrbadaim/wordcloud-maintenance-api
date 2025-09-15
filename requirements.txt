@@ -1,6 +1,9 @@
-jieba==0.42.1
-pandas==2.2.2
-numpy==1.26.4
-wordcloud==1.9.3
-pillow==10.4.0
-pymongo==4.8.0
+Flask
+pandas
+jieba
+wordcloud
+matplotlib
+numpy
+gunicorn
+pymongo[srv]
+requests
